@@ -6,9 +6,15 @@
 </head>
 
 <body>
-<div th:each="elem : ${userAccounts}">
+<form action="http://localhost:8080/logout" method="POST">
+    <input type="submit" value="Выйти">
+</form>
+
+<a href="user/new">Add new User</a>
+
+<div th:each="elem : ${users}">
     <p th:text="${elem.username}"></p>
-    <p th:text="${elem.roles}"></p>
+    <a th:href="'/user/' + ${elem.id}">Details</a>
 </div>
 
 </body>

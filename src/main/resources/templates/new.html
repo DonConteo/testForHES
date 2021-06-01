@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}"/>
+</head>
+<body>
+<form action="http://localhost:8080/logout" method="POST">
+    <input type="submit" value="Выйти">
+</form>
+
+<form action="new" method="post">
+    <div>
+        <input name="username" type="text" placeholder="Username" pattern = "[A-Za-z]"/>
+        <input name="password" type="password" placeholder="Password"/>
+        <input name="firstname" type="text" placeholder="First name"/>
+        <input name="lastname" type="text" placeholder="Last name"/>
+        <input type="submit" value="Save User"/>
+    </div>
+</form>
+
+</body>
+</html>

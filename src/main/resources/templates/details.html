@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}"/>
+</head>
+<body>
+<form action="http://localhost:8080/logout" method="POST">
+    <input type="submit" value="Выйти">
+</form>
+
+<a href="http://localhost:8080/user">Back to UserList</a>
+
+<div th:each="elem : ${user}">
+    <p th:text="${elem.username}"></p>
+    <p th:text="${elem.firstname}"></p>
+    <p th:text="${elem.lastname}"></p>
+    <p th:text="${elem.createDate}"></p>
+        <div sec:authorize="hasAuthority('ADMIN')">
+            <form th:action="${id}" method="post">
+                <p><input name="status" type="radio" value="true"> ACTIVE</p>
+                <p><input name="status" type="radio" value="false"> INACTIVE</p>
+                <input type="submit" value="Confirm">
+            </form>
+        </div>
+</div>
+
+</body>
+</html>

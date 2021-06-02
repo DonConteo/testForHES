@@ -18,20 +18,11 @@ public class UserAccount implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(unique = true)
-    @Size(min = 3, max = 16, message = "Username length must be 3-16 symbols")
-    @Pattern(regexp = "[a-zA-Z]", message = "Username must contain latin letters only")
     private String username;
-    @Size(min = 3, max = 16, message = "Password length must be 3-16 symbols")
-    @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "Password must contain latin letters and numbers only")
     private String password;
-    @Size(min = 1, max = 16, message = "Firstname length must be 1-16 symbols")
-    @Pattern(regexp = "[a-zA-Z]", message = "Password must contain at least one letter")
     private String firstname;
-    @Size(min = 1, max = 16, message = "Lastname length must be 1-16 symbols")
-    @Pattern(regexp = "[a-zA-Z]", message = "Password must contain at least one digit")
     private String lastname;
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
     private boolean status;
     private LocalDate createDate;

@@ -1,11 +1,7 @@
 package com.dmitriy.tsoy.russia.testForHES.service;
 
-import com.dmitriy.tsoy.russia.testForHES.model.UserAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class ValidatorService {
@@ -13,56 +9,90 @@ public class ValidatorService {
     @Autowired
     UserAccountService userAccountService;
 
-    public List<String> usernameValidate(String username) {
-        List<String> usernameErrors = new ArrayList<>();
-        List<UserAccount> userAccounts = userAccountService.findAllUsers();
-        List<String> usernames = new ArrayList<>();
-        for(UserAccount userAccount : userAccounts) {
-            usernames.add(userAccount.getUsername());
+    public boolean isUsernameOccupied(String username) {
+        boolean flag = true;
+        if(userAccountService.getUserAccountByUsername(username) == null) {
+            flag = false;
         }
-        if(usernames.contains(username)) {
-            usernameErrors.add("Username is occupied");
-        }
+        return flag;
+    }
+
+    public boolean isUsernameLengthIsRight(String username) {
+        boolean flag = true;
         if(username.length() < 2 || username.length() > 15) {
-            usernameErrors.add("Username length must be 3-16 symbols");
+            flag = false;
         }
-        while(!username.matches("[a-zA-Z]+")) {
-            usernameErrors.add("Username must contain latin letters only");
-        }
-        return usernameErrors;
+        return flag;
     }
 
-    public List<String> passwordValidate(String password) {
-        List<String> passwordErrors = new ArrayList<>();
+    public boolean isUsernameLetters(String username) {
+        boolean flag = true;
+        for (char c : username.toCharArray()) {
+            if (!(Character.isLetter(c))) {
+                flag = false;
+            }
+        }
+        return flag;
+    }
+
+    public boolean isPasswordLengthIsRight(String password) {
+        boolean flag = true;
         if(password.length() < 2 || password.length() > 15) {
-            passwordErrors.add("Password length must be 3-16 symbols");
+            flag = false;
         }
-        if(!password.matches("^[a-zA-Z0-9]+$")) {
-            passwordErrors.add("Password must contain latin letters and numbers only");
-        } else {
-            char c = password.charAt(0);
-            int letters = 0;
-            int digits = 0;
-            if(Character.isDigit(c)) {
-                digits++;
-            } else {
-                letters++;
-            }
-            if(letters == 0) {
-                passwordErrors.add("Password must contain at least one letter");
-            }
-            if(digits == 0) {
-                passwordErrors.add("Password must contain at least one digit");
-            }
-        }
-        return passwordErrors;
+        return flag;
     }
 
-    public List<String> nameValidate(String name) {
-        List<String> nameError = new ArrayList<>();
-        while (!name.matches("[a-zA-Z]+")) {
-            nameError.add("Username must contain latin letters only");
+    public boolean isPasswordLettersDigits(String password) {
+        boolean flag = true;
+        for (char c : password.toCharArray()) {
+            if (!Character.isLetterOrDigit(c)) {
+                flag = false;
+            }
         }
-        return nameError;
+        return flag;
+    }
+
+    public boolean isPasswordContainsDigitsAndLetters(String password) {
+        boolean mainFlag = true;
+        boolean digitFlag = false;
+        boolean letterFlag = false;
+        for (char c : password.toCharArray()) {
+            if (Character.isLetter(c)) {
+                letterFlag = true;
+            } else {
+                digitFlag = true;
+            }
+        }
+        if(!(digitFlag && letterFlag)) {
+            mainFlag = false;
+        }
+        return mainFlag;
+    }
+
+    public boolean isNameEmpty(String name) {
+        boolean flag = false;
+        if(name.equals("")) {
+            flag = true;
+        }
+        return flag;
+    }
+
+    public boolean isNameLengthRight(String name) {
+        boolean flag = true;
+        if(name.length() > 15) {
+            flag = false;
+        }
+        return flag;
+    }
+
+    public boolean isNameLetters(String name) {
+        boolean flag = true;
+        for (char c : name.toCharArray()) {
+            if (!(Character.isLetter(c))) {
+                flag = false;
+            }
+        }
+        return flag;
     }
 }

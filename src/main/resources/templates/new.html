@@ -9,7 +9,7 @@
     <input type="submit" value="Выйти">
 </form>
 
-<form action="new" th:object="${user_account}" method="post">
+<form action="new" th:object="${userdto}" method="post">
     <div>
         <input name="username" type="text" placeholder="Username"/>
         <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
@@ -21,7 +21,6 @@
         <p th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}"></p>
         <input type="submit" value="Save User"/>
     </div>
-    <span class="text-success" th:utext="${successMessage}"></span>
 </form>
 
 </body>

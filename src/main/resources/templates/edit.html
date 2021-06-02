@@ -10,14 +10,18 @@
     <input type="submit" value="Выйти">
 </form>
 
-<form th:action="'{id}/' + 'edit'" method="post">
-<div th:each="elem : ${user}">
-    <input name="username" th:placeholder="${elem.username}">
-    <input name="password" type="password">
-    <input name="firstname" th:placeholder="${elem.firstname}">
-    <input name="lastname" th:placeholder="${elem.lastname}">
-    <input type="submit" value="Update User">
-</div>
+<form action="edit" th:object="${userdto}" method="post">
+    <div>
+        <input name="username" type="text" th:attr="value = ${userdto.username}"/>
+        <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
+        <input name="password" type="password" placeholder="New password"/>
+        <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+        <input name="firstname" type="text" th:attr="value = ${userdto.firstname}"/>
+        <p th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}"></p>
+        <input name="lastname" type="text" th:attr="value = ${userdto.lastname}"/>
+        <p th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}"></p>
+        <input type="submit" value="Update User"/>
+    </div>
 </form>
 
 </body>

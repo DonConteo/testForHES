@@ -28,6 +28,14 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long> 
 
     @Modifying
     @Transactional
+    @Query(value = "update user_account set username = :username, firstname = :firstname, lastname = :lastname where id = :id", nativeQuery = true)
+    void updateUserAccountWithoutPassword(@Param("id") long id,
+                           @Param("username") String username,
+                           @Param("firstname") String firstname,
+                           @Param("lastname") String lastname);
+
+    @Modifying
+    @Transactional
     @Query(value = "update user_account set status = :status where id = :id", nativeQuery = true)
     void changeUserActivity(@Param("id") long id, boolean status);
 }

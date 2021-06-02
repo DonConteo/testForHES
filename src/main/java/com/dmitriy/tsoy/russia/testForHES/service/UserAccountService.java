@@ -1,7 +1,9 @@
 package com.dmitriy.tsoy.russia.testForHES.service;
 
+import com.dmitriy.tsoy.russia.testForHES.dto.UserDto;
 import com.dmitriy.tsoy.russia.testForHES.model.Role;
 import com.dmitriy.tsoy.russia.testForHES.model.UserAccount;
+import com.dmitriy.tsoy.russia.testForHES.repository.RoleRepository;
 import com.dmitriy.tsoy.russia.testForHES.repository.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +21,8 @@ public class UserAccountService implements UserDetailsService {
     @Autowired
     UserAccountRepository userRepo;
     @Autowired
+    RoleRepository roleRepo;
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     public void saveUser(String username, String password, String firstname, String lastname){
@@ -32,12 +36,43 @@ public class UserAccountService implements UserDetailsService {
         userRepo.save(user);
     }
 
+    public UserAccount getUserAccountByUsername(String username) {
+        return userRepo.findByUsername(username);
+    }
+
     public void updateUser(long id, String username, String password, String firstname, String lastname) {
         userRepo.updateUserAccount(id, username, password, firstname, lastname);
     }
 
-    public List<UserAccount> findAllUsers() {
-        return userRepo.findAll();
+    public void updateUser(long id, String username, String firstname, String lastname) {
+        userRepo.updateUserAccountWithoutPassword(id, username, firstname, lastname);
+    }
+
+    public List<UserDto> findAllUsers() {
+        List<UserDto> list = new ArrayList<>();
+        List<UserAccount> userAccounts = userRepo.findAll();
+        for(UserAccount userAccount : userAccounts) {
+            Set<String> roles = roleRepo.getRolesForUser(userAccount.getId());
+            String status;
+            if(userAccount.isStatus()) {
+                status = "ACTIVE";
+            } else {
+                status = "INACTIVE";
+            }
+            UserDto userDto = new UserDto(userAccount.getId(),
+                    userAccount.getUsername(),
+                    userAccount.getFirstname(),
+                    userAccount.getLastname(),
+                    roles,
+                    status,
+                    userAccount.getCreateDate());
+            list.add(userDto);
+        }
+        return list;
+    }
+
+    private Set<String> getRolesForUser(long id) {
+        return roleRepo.getRolesForUser(id);
     }
 
     public UserAccount getUserDetailsById(long id) {
@@ -47,27 +82,6 @@ public class UserAccountService implements UserDetailsService {
     public void changeUserActivity(long id, boolean status) {
         userRepo.changeUserActivity(id, status);
     }
-
-//    public Map<String, List<String>> validateUserInfo(String username, String password, String firstname, String lastname) {
-//        Map<String, List<String>> errors = new HashMap<>();
-//        List<String> usernameErrors = validatorService.usernameValidate(username);
-//        List<String> passwordErrors = validatorService.passwordValidate(password);
-//        List<String> firstnameErrors = validatorService.nameValidate(firstname);
-//        List<String> lastnameErrors = validatorService.nameValidate(lastname);
-//        if(!usernameErrors.isEmpty()) {
-//            errors.put("usernameError", usernameErrors);
-//        }
-//        if(!passwordErrors.isEmpty()) {
-//            errors.put("passwordError", passwordErrors);
-//        }
-//        if(!firstnameErrors.isEmpty()) {
-//            errors.put("firstnameError", firstnameErrors);
-//        }
-//        if(!lastnameErrors.isEmpty()) {
-//            errors.put("lastnameError", lastnameErrors);
-//        }
-//        return errors;
-//    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

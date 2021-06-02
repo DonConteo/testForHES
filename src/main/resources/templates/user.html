@@ -3,6 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${title}"/>
+    <style>
+        table {
+            width: 60%;
+            border-collapse: collapse;
+            margin: auto;
+        }
+        td {
+            border: 2px solid #000;
+        }
+    </style>
 </head>
 
 <body>
@@ -12,9 +22,38 @@
 
 <a href="user/new">Add new User</a>
 
-<div th:each="elem : ${users}">
-    <p th:text="${elem.username}"></p>
-    <a th:href="'/user/' + ${elem.id}">Details</a>
+<div>
+    <table>
+        <tr>
+            <td align="center" width="30%">
+                <a>USERS</a>
+            </td>
+            <td align="center" width="30%">
+                <a>ROLE</a>
+            </td>
+
+            <td align="center" width="20%">
+                <a>ACTIVE</a>
+            </td>
+            <td align="center" width="20%">
+                <a>DETAILS</a>
+            </td>
+        </tr>
+        <tr th:each="elem : ${users}">
+            <td width="30%">
+                <a th:text="${elem.username}"></a>
+            </td>
+            <td width="30%">
+                <a th:text="${elem.roles}"></a>
+            </td>
+            <td width="20%">
+                <a th:text="${elem.status}"></a>
+            </td>
+            <td width="20%">
+                <a th:href="'/user/' + ${elem.id}">Details</a>
+            </td>
+        </tr>
+    </table>
 </div>
 
 </body>

@@ -16,13 +16,16 @@
     <p th:text="${elem.firstname}"></p>
     <p th:text="${elem.lastname}"></p>
     <p th:text="${elem.createDate}"></p>
-        <div sec:authorize="hasAuthority('ADMIN')">
-            <form th:action="${id}" method="post">
-                <p><input name="status" type="radio" value="true"> ACTIVE</p>
-                <p><input name="status" type="radio" value="false"> INACTIVE</p>
-                <input type="submit" value="Confirm">
-            </form>
-        </div>
+    <div sec:authorize="hasAuthority('ADMIN')">
+        <form th:action="${id}" method="post">
+            <p><input name="status" type="radio" value="true"> ACTIVE</p>
+            <p><input name="status" type="radio" value="false"> INACTIVE</p>
+            <input type="submit" value="Confirm">
+        </form>
+    </div>
+    <div sec:authorize="hasAuthority('ADMIN')">
+        <a th:href="@{${id} + '/edit'}">Edit User</a>
+    </div>
 </div>
 
 </body>

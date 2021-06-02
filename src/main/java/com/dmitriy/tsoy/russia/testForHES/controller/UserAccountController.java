@@ -1,5 +1,6 @@
 package com.dmitriy.tsoy.russia.testForHES.controller;
 
+import com.dmitriy.tsoy.russia.testForHES.dto.UserDto;
 import com.dmitriy.tsoy.russia.testForHES.model.UserAccount;
 import com.dmitriy.tsoy.russia.testForHES.service.UserAccountService;
 import com.dmitriy.tsoy.russia.testForHES.service.ValidatorService;
@@ -9,8 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-
-import javax.validation.Valid;
 
 
 @Controller
@@ -23,57 +22,220 @@ public class UserAccountController {
     ValidatorService validatorService;
 
     @GetMapping()
-    public String getAllUsers(Model model) {
-        model.addAttribute("title", "Users");
-        model.addAttribute("users", userService.findAllUsers());
-        return "user";
+    public ModelAndView getAllUsers() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("user");
+        modelAndView.addObject("users", userService.findAllUsers());
+        return modelAndView;
+    }
+
+    @GetMapping("{id}")
+    public ModelAndView getUserDetailsById(@PathVariable("id") long id) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("details");
+        modelAndView.addObject("user", userService.getUserDetailsById(id));
+        return modelAndView;
+    }
+
+    @PostMapping("{id}")
+    public ModelAndView changeUserActivity(@PathVariable("id") long id, boolean status) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("redirect:/user/{id}");
+        userService.changeUserActivity(id, status);
+        return modelAndView;
+
+//        return "redirect:/user/{id}";
     }
 
     @GetMapping("new")
     public ModelAndView saveNewUserAccount() {
         ModelAndView modelAndView = new ModelAndView();
-        UserAccount userAccount = new UserAccount();
-        modelAndView.addObject("user_account", userAccount);
+        UserDto userDto = new UserDto();
+        modelAndView.addObject("userdto", userDto);
         modelAndView.setViewName("new");
         return modelAndView;
     }
 
     @PostMapping("new")
-    public ModelAndView saveNewUserAccount(@Valid @ModelAttribute(value="user_account") UserAccount user, BindingResult result) {
+    public ModelAndView saveNewUserAccount(@ModelAttribute(value="userdto") UserDto userDto, BindingResult result) {
         ModelAndView modelAndView = new ModelAndView();
-        if (result.hasErrors()) {
-            modelAndView.setViewName("new");
-        } else {
-            userService.saveUser(user.getUsername(), user.getPassword(), user.getFirstname(), user.getLastname());
-            modelAndView.addObject("successMessage", "User has been added successfully");
-            modelAndView.setViewName("redirect:/user");
+
+        if(!validatorService.isUsernameLengthIsRight(userDto.getUsername())) {
+            result.
+                    rejectValue("username", "error.username.length",
+                            "Username length must be 3-16 symbols");
         }
+        if(validatorService.isUsernameOccupied(userDto.getUsername())) {
+            result.
+                    rejectValue("username", "error.username.unique",
+                            "Username is occupied");
+        }
+        if(!validatorService.isUsernameLetters(userDto.getUsername())) {
+            result.
+                    rejectValue("username", "error.username.letters",
+                            "Username must contain latin letters only");
+        }
+
+        if(!validatorService.isPasswordLengthIsRight(userDto.getPassword())) {
+            result.
+                    rejectValue("password", "error.password.length",
+                            "Password length must be 3-16 symbols");
+        }
+        if(!validatorService.isPasswordLettersDigits(userDto.getPassword())) {
+            result.
+                    rejectValue("password", "error.password.symbols",
+                            "Password must contain latin letters and numbers only");
+        }
+        if(!validatorService.isPasswordContainsDigitsAndLetters(userDto.getPassword())) {
+            result.
+                    rejectValue("password", "error.password.digitOrLetter",
+                            "Password must contain at least one digit and one letter");
+        }
+
+        if(validatorService.isNameEmpty(userDto.getFirstname())) {
+            result.
+                    rejectValue("firstname", "error.firstname.null",
+                            "Firstname can't be empty");
+        }
+        if(!validatorService.isNameLengthRight(userDto.getFirstname())) {
+            result.
+                    rejectValue("firstname", "error.firstname.length",
+                            "Firstname length must be 1-16 symbols");
+        }
+        if(!validatorService.isNameLetters(userDto.getFirstname())) {
+            result.
+                    rejectValue("firstname", "error.firstname.letters",
+                            "Firstname must contain latin letters only");
+        }
+
+        if(validatorService.isNameEmpty(userDto.getLastname())) {
+            result.
+                    rejectValue("lastname", "error.lastname.null",
+                            "Lastname can't be empty");
+        }
+        if(!validatorService.isNameLengthRight(userDto.getLastname())) {
+            result.
+                    rejectValue("lastname", "error.lastname.length",
+                            "Lastname length must be 1-16 symbols");
+        }
+        if(!validatorService.isNameLetters(userDto.getLastname())) {
+            result.
+                    rejectValue("lastname", "error.lastname.letters",
+                            "Lastname must contain latin letters only");
+        }
+
+        if(result.hasErrors()){
+            modelAndView.setViewName("new");
+            return modelAndView;
+        }
+        userService.saveUser(userDto.getUsername(), userDto.getPassword(), userDto.getFirstname(), userDto.getLastname());
+        modelAndView.setViewName("redirect:/user");
+        return modelAndView;
+        }
+
+    @GetMapping("{id}/edit")
+    public ModelAndView updateUserAccount(@PathVariable("id") long id) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("edit");
+        UserAccount user = userService.getUserDetailsById(id);
+        UserDto userDto = new UserDto(user.getUsername(), user.getPassword(), user.getFirstname(), user.getLastname());
+        modelAndView.addObject("userdto", userDto);
         return modelAndView;
     }
 
-    @GetMapping("{id}")
-    public String getUserDetailsById(@PathVariable("id") long id, Model model) {
-        model.addAttribute("title", "Details");
-        model.addAttribute("user", userService.getUserDetailsById(id));
-        return "details";
-    }
+    @PostMapping("{id}/edit")
+    public ModelAndView updateUserAccount(@PathVariable("id") long id, @ModelAttribute(value="userdto") UserDto userDto, BindingResult result ) {
+        ModelAndView modelAndView = new ModelAndView();
+        UserDto userForUpdate = new UserDto();
 
-    @PostMapping("{id}")
-    public String changeUserActivity(@PathVariable("id") long id, boolean status) {
-        userService.changeUserActivity(id, status);
-        return "redirect:/user/{id}";
-    }
+        if(userDto.getUsername().equals(userService.getUserDetailsById(id).getUsername())) {
+            userForUpdate.setUsername(userDto.getUsername());
+        } else {
+            if(validatorService.isUsernameOccupied(userDto.getUsername())) {
+                result.
+                        rejectValue("username", "error.username.unique",
+                                "Username is occupied");
+            }
+            if(!validatorService.isUsernameLengthIsRight(userDto.getUsername())) {
+                result.
+                        rejectValue("username", "error.username.length",
+                                "Username length must be 3-16 symbols");
+            }
+            if(!validatorService.isUsernameLetters(userDto.getUsername())) {
+                result.
+                        rejectValue("username", "error.username.letters",
+                                "Username must contain latin letters only");
+            }
+        }
 
-    @GetMapping("{id}/edit")
-    public String updateUserAccount(@PathVariable("id") long id, Model model) {
-        model.addAttribute("title", "Update");
-        model.addAttribute("user", userService.getUserDetailsById(id));
-        return "edit";
-    }
+        if(userDto.getPassword().equals("")) {
+            userForUpdate.setPassword("");
+        } else {
+            if(!validatorService.isPasswordLengthIsRight(userDto.getPassword())) {
+                result.
+                        rejectValue("password", "error.password.length",
+                                "Password length must be 3-16 symbols");
+            }
+            if(!validatorService.isPasswordLettersDigits(userDto.getPassword())) {
+                result.
+                        rejectValue("password", "error.password.symbols",
+                                "Password must contain latin letters and numbers only");
+            }
+            if(!validatorService.isPasswordContainsDigitsAndLetters(userDto.getPassword())) {
+                result.
+                        rejectValue("password", "error.password.digitOrLetter",
+                                "Password must contain at least one digit and one letter");
+            }
+        }
 
-    @PutMapping("{id}/edit")
-    public String updateUserAccount(@PathVariable("id") long id, String username, String password, String firstname, String lastname) {
-        userService.updateUser(id, username, password, firstname, lastname);
-        return "redirect:/user";
+        if(validatorService.isNameEmpty(userDto.getFirstname())) {
+            result.
+                    rejectValue("firstname", "error.firstname.null",
+                            "Firstname can't be empty");
+        }
+        if(!validatorService.isNameLengthRight(userDto.getFirstname())) {
+            result.
+                    rejectValue("firstname", "error.firstname.length",
+                            "Firstname length must be 1-16 symbols");
+        }
+        if(!validatorService.isNameLetters(userDto.getFirstname())) {
+            result.
+                    rejectValue("firstname", "error.firstname.letters",
+                            "Firstname must contain latin letters only");
+        }
+
+        if(validatorService.isNameEmpty(userDto.getLastname())) {
+            result.
+                    rejectValue("lastname", "error.lastname.null",
+                            "Lastname can't be empty");
+        }
+        if(!validatorService.isNameLengthRight(userDto.getLastname())) {
+            result.
+                    rejectValue("lastname", "error.lastname.length",
+                            "Lastname length must be 1-16 symbols");
+        }
+        if(!validatorService.isNameLetters(userDto.getLastname())) {
+            result.
+                    rejectValue("lastname", "error.lastname.letters",
+                            "Lastname must contain latin letters only");
+        }
+
+        if(result.hasErrors()){
+            modelAndView.setViewName("edit");
+            return modelAndView;
+        }
+        if(!userForUpdate.getPassword().equals("")) {
+            userForUpdate.setPassword(userDto.getPassword());
+        }
+        userForUpdate.setFirstname(userDto.getFirstname());
+        userForUpdate.setLastname(userDto.getLastname());
+
+        if(userForUpdate.getPassword().equals("")) {
+            userService.updateUser(id, userForUpdate.getUsername(), userForUpdate.getFirstname(), userForUpdate.getLastname());
+        } else {
+            userService.updateUser(id, userForUpdate.getUsername(), userForUpdate.getPassword(), userForUpdate.getFirstname(), userForUpdate.getLastname());
+        }
+        modelAndView.setViewName("redirect:/user/{id}");
+        return modelAndView;
     }
 }

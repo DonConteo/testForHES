@@ -13,6 +13,6 @@ import java.util.Set;
 public interface RoleRepository extends JpaRepository<Role, Long> {
 
     @Transactional
-    @Query(value = "SELECT * FROM role as r JOIN users_roles ur ON ur.roles_id=r.id JOIN user as u ON u.id=ur.user_id WHERE u.id=:user_id", nativeQuery = true)
-    Set<Role> getRolesForUser(@Param("user_id") long id);
+    @Query(value = "SELECT name FROM role as r JOIN user_account_roles ur ON ur.roles_id=r.id JOIN user_account as u ON u.id=ur.user_account_id WHERE u.id = :user_id", nativeQuery = true)
+    Set<String> getRolesForUser(@Param("user_id") long id);
 }

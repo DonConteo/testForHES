@@ -5,11 +5,18 @@ import com.dmitriy.tsoy.russia.testForHES.model.UserAccount;
 import com.dmitriy.tsoy.russia.testForHES.service.UserAccountService;
 import com.dmitriy.tsoy.russia.testForHES.service.ValidatorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 
 @Controller
@@ -22,10 +29,19 @@ public class UserAccountController {
     ValidatorService validatorService;
 
     @GetMapping()
-    public ModelAndView getAllUsers() {
+    public ModelAndView getAllUsers(@PageableDefault(page = 0, size = 5) Pageable pageable) {
         ModelAndView modelAndView = new ModelAndView();
+        Page<UserAccount> page;
+
+        page = userService.findAllUsers(pageable);
+
+        int totalPages = page.getTotalPages();
+        if(totalPages > 0) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages).boxed().collect(Collectors.toList());
+            modelAndView.addObject("pages", pageNumbers);
+        }
+        modelAndView.addObject("users", page);
         modelAndView.setViewName("user");
-        modelAndView.addObject("users", userService.findAllUsers());
         return modelAndView;
     }
 

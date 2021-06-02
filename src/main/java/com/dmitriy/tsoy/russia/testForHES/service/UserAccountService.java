@@ -1,11 +1,12 @@
 package com.dmitriy.tsoy.russia.testForHES.service;
 
-import com.dmitriy.tsoy.russia.testForHES.dto.UserDto;
 import com.dmitriy.tsoy.russia.testForHES.model.Role;
 import com.dmitriy.tsoy.russia.testForHES.model.UserAccount;
 import com.dmitriy.tsoy.russia.testForHES.repository.RoleRepository;
 import com.dmitriy.tsoy.russia.testForHES.repository.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -48,27 +49,30 @@ public class UserAccountService implements UserDetailsService {
         userRepo.updateUserAccountWithoutPassword(id, username, firstname, lastname);
     }
 
-    public List<UserDto> findAllUsers() {
-        List<UserDto> list = new ArrayList<>();
-        List<UserAccount> userAccounts = userRepo.findAll();
-        for(UserAccount userAccount : userAccounts) {
-            Set<String> roles = roleRepo.getRolesForUser(userAccount.getId());
-            String status;
-            if(userAccount.isStatus()) {
-                status = "ACTIVE";
-            } else {
-                status = "INACTIVE";
-            }
-            UserDto userDto = new UserDto(userAccount.getId(),
-                    userAccount.getUsername(),
-                    userAccount.getFirstname(),
-                    userAccount.getLastname(),
-                    roles,
-                    status,
-                    userAccount.getCreateDate());
-            list.add(userDto);
-        }
-        return list;
+    public Page<UserAccount> findAllUsers(Pageable pageable) {
+        return userRepo.findAllUsers(pageable);
+
+
+//        List<UserDto> list = new ArrayList<>();
+//        List<UserAccount> userAccounts = userRepo.findAll();
+//        for(UserAccount userAccount : userAccounts) {
+//            Set<String> roles = roleRepo.getRolesForUser(userAccount.getId());
+//            String status;
+//            if(userAccount.isStatus()) {
+//                status = "ACTIVE";
+//            } else {
+//                status = "INACTIVE";
+//            }
+//            UserDto userDto = new UserDto(userAccount.getId(),
+//                    userAccount.getUsername(),
+//                    userAccount.getFirstname(),
+//                    userAccount.getLastname(),
+//                    roles,
+//                    status,
+//                    userAccount.getCreateDate());
+//            list.add(userDto);
+//        }
+//        return list;
     }
 
     private Set<String> getRolesForUser(long id) {

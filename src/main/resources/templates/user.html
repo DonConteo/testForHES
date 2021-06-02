@@ -44,7 +44,7 @@
                 <a th:text="${elem.username}"></a>
             </td>
             <td width="30%">
-                <a th:text="${elem.roles}"></a>
+<!--                <a th:text="${elem.roles}"></a>-->
             </td>
             <td width="20%">
                 <a th:text="${elem.status}"></a>
@@ -54,6 +54,9 @@
             </td>
         </tr>
     </table>
+    <div th:if="${users.totalPages > 0}" th:each="pageNumber : ${pages}">
+        <a th:href="@{/user(size=${users.size}, page=${pageNumber} - 1)}" th:text="${pageNumber}"></a>
+    </div>
 </div>
 
 </body>

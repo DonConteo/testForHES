@@ -30,6 +30,7 @@ public class UserAccountService implements UserDetailsService {
                 firstname(firstname).
                 lastname(lastname).
                 roles(Collections.singleton(new Role(2L, "USER"))).
+                status(true).
                 createDate(LocalDate.now())
                 .build();
         userRepo.save(user);

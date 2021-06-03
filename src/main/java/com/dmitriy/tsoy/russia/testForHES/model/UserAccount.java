@@ -25,6 +25,16 @@ public class UserAccount implements UserDetails {
     private boolean status;
     private LocalDate createDate;
 
+    public long getId() {
+        return id;
+    }
+    @Override
+    public String getUsername() {
+        return username;
+    }
+    public String getPassword() {
+        return password;
+    }
     public String getFirstname() {
         return firstname;
     }
@@ -37,21 +47,11 @@ public class UserAccount implements UserDetails {
     public void setStatus(boolean status) {
         this.status = status;
     }
-    public LocalDate getCreateDate() {
-        return createDate;
-    }
-    public long getId() {
-        return id;
-    }
-    @Override
-    public String getUsername() {
-        return username;
-    }
-    public String getPassword() {
-        return password;
-    }
     public Collection<? extends GrantedAuthority> getRoles() {
         return roles;
+    }
+    public LocalDate getCreateDate() {
+        return createDate;
     }
 
     @Override

@@ -3,19 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${title}"/>
+    <style>
+        .center {
+        width: 300px;
+        padding: 10px;
+        margin: auto;
+        background: #c5c9d1;
+        }
+    </style>
 </head>
 <body>
 <form action="http://localhost:8080/logout" method="POST">
-    <input type="submit" value="Выйти">
+    <input type="submit" value="Log Out">
 </form>
 
 <a href="http://localhost:8080/user">Back to UserList</a>
 
-<div th:each="elem : ${user}">
+<div class="center" th:each="elem : ${user}">
     <p th:text="${elem.username}"></p>
     <p th:text="${elem.firstname}"></p>
     <p th:text="${elem.lastname}"></p>
     <p th:text="${elem.createDate}"></p>
+    <a th:each="el : ${elem.roles}" th:text="${el.name}"></a>
     <div sec:authorize="hasAuthority('ADMIN')">
         <form th:action="${id}" method="post">
             <p><input name="status" type="radio" value="true"> ACTIVE</p>
@@ -23,7 +32,7 @@
             <input type="submit" value="Confirm">
         </form>
     </div>
-    <div sec:authorize="hasAuthority('ADMIN')">
+    <div align="right" sec:authorize="hasAuthority('ADMIN')">
         <a th:href="@{${id} + '/edit'}">Edit User</a>
     </div>
 </div>

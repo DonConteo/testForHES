@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${title}"/>
+    <style>
+        .center {
+        width: 300px;
+        padding: 10px;
+        margin: auto;
+        background: #c5c9d1;
+        }
+    </style>
 </head>
 
-<body>
-<div th:if="${param.error}">
-    Invalid username and password.
-</div>
-<div th:if="${param.logout}">
-    You have been logged out.
-</div>
-<a>Здравствуйте, <span th:text="${user}"></span></a>
 <form th:action="@{/login}" method="POST">
-    <p>Имя</p>
-    <input placeholder="Введите имя" type="text" name="username">
-    <p>Пароль</p>
-    <input placeholder="Введите пароль" type="password" name="password">
-    <button type="submit">Войти</button>
+    <div class="center">
+        <input placeholder="Username" type="text" name="username">
+        <input placeholder="Password" type="password" name="password">
+        <a th:if="${param.error}">Invalid username and password.</a>
+        <button type="submit">Sign In</button>
+    </div>
 </form>
-<a href="registration">Зарегистрироваться</a>
 </body>
 </html>

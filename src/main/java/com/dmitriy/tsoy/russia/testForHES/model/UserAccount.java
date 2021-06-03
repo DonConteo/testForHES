@@ -3,8 +3,6 @@ package com.dmitriy.tsoy.russia.testForHES.model;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.validation.constraints.*;
-
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Set;
@@ -52,7 +50,7 @@ public class UserAccount implements UserDetails {
     public String getPassword() {
         return password;
     }
-    private Collection<? extends GrantedAuthority> getRoles() {
+    public Collection<? extends GrantedAuthority> getRoles() {
         return roles;
     }
 

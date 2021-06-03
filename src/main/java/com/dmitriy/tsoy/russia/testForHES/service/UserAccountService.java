@@ -2,7 +2,6 @@ package com.dmitriy.tsoy.russia.testForHES.service;
 
 import com.dmitriy.tsoy.russia.testForHES.model.Role;
 import com.dmitriy.tsoy.russia.testForHES.model.UserAccount;
-import com.dmitriy.tsoy.russia.testForHES.repository.RoleRepository;
 import com.dmitriy.tsoy.russia.testForHES.repository.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,8 +21,6 @@ public class UserAccountService implements UserDetailsService {
     @Autowired
     UserAccountRepository userRepo;
     @Autowired
-    RoleRepository roleRepo;
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     public void saveUser(String username, String password, String firstname, String lastname){
@@ -32,8 +29,9 @@ public class UserAccountService implements UserDetailsService {
                 password(passwordEncoder.encode(password)).
                 firstname(firstname).
                 lastname(lastname).
-                roles(Collections.singleton(new Role(1L, "ADMIN"))).
-                createDate(LocalDate.now()).build();
+                roles(Collections.singleton(new Role(2L, "USER"))).
+                createDate(LocalDate.now())
+                .build();
         userRepo.save(user);
     }
 
@@ -51,32 +49,6 @@ public class UserAccountService implements UserDetailsService {
 
     public Page<UserAccount> findAllUsers(Pageable pageable) {
         return userRepo.findAllUsers(pageable);
-
-
-//        List<UserDto> list = new ArrayList<>();
-//        List<UserAccount> userAccounts = userRepo.findAll();
-//        for(UserAccount userAccount : userAccounts) {
-//            Set<String> roles = roleRepo.getRolesForUser(userAccount.getId());
-//            String status;
-//            if(userAccount.isStatus()) {
-//                status = "ACTIVE";
-//            } else {
-//                status = "INACTIVE";
-//            }
-//            UserDto userDto = new UserDto(userAccount.getId(),
-//                    userAccount.getUsername(),
-//                    userAccount.getFirstname(),
-//                    userAccount.getLastname(),
-//                    roles,
-//                    status,
-//                    userAccount.getCreateDate());
-//            list.add(userDto);
-//        }
-//        return list;
-    }
-
-    private Set<String> getRolesForUser(long id) {
-        return roleRepo.getRolesForUser(id);
     }
 
     public UserAccount getUserDetailsById(long id) {

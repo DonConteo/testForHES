@@ -3,23 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${title}"/>
+    <style>
+        .center {
+        width: 300px;
+        padding: 10px;
+        margin: auto;
+        background: #c5c9d1;
+        }
+    </style>
 </head>
 
 <body>
 <form action="http://localhost:8080/logout" method="POST">
-    <input type="submit" value="Выйти">
+    <input type="submit" value="Log Out">
 </form>
 
+<a href="http://localhost:8080/user">Back to Details</a>
+
 <form action="edit" th:object="${userdto}" method="post">
-    <div>
+    <div class="center">
         <input name="username" type="text" th:attr="value = ${userdto.username}"/>
-        <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
+        <p style="color:red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
         <input name="password" type="password" placeholder="New password"/>
-        <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+        <p style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
         <input name="firstname" type="text" th:attr="value = ${userdto.firstname}"/>
-        <p th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}"></p>
+        <p style="color:red" th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}"></p>
         <input name="lastname" type="text" th:attr="value = ${userdto.lastname}"/>
-        <p th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}"></p>
+        <p style="color:red" th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}"></p>
         <input type="submit" value="Update User"/>
     </div>
 </form>

@@ -3,14 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${title}"/>
+    <style>
+        .center {
+        width: 300px;
+        padding: 10px;
+        margin: auto;
+        background: #c5c9d1;
+        }
+    </style>
 </head>
 <body>
 <form action="http://localhost:8080/logout" method="POST">
-    <input type="submit" value="Выйти">
+    <input type="submit" value="Log Out">
 </form>
 
+<a href="http://localhost:8080/user">Back to UserList</a>
+
 <form action="new" th:object="${userdto}" method="post">
-    <div>
+    <div class="center">
         <input name="username" type="text" placeholder="Username"/>
         <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
         <input name="password" type="password" placeholder="Password"/>

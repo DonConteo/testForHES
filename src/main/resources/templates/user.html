@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title th:text="${title}"/>
@@ -12,15 +12,23 @@
         td {
             border: 2px solid #000;
         }
+        .center {
+        width: 30px;
+        padding: 10px;
+        margin: auto;
+        background: #c5c9d1;
+        }
     </style>
 </head>
 
 <body>
 <form action="http://localhost:8080/logout" method="POST">
-    <input type="submit" value="Выйти">
+    <input type="submit" value="Log Out">
 </form>
 
-<a href="user/new">Add new User</a>
+<div sec:authorize="hasAuthority('ADMIN')">
+    <a href="user/new">Add new User</a>
+</div>
 
 <div>
     <table>
@@ -44,7 +52,7 @@
                 <a th:text="${elem.username}"></a>
             </td>
             <td width="30%">
-<!--                <a th:text="${elem.roles}"></a>-->
+                <a th:each="el : ${elem.roles}" th:text="${el.name}"></a>
             </td>
             <td width="20%">
                 <a th:text="${elem.status}"></a>
@@ -54,8 +62,8 @@
             </td>
         </tr>
     </table>
-    <div th:if="${users.totalPages > 0}" th:each="pageNumber : ${pages}">
-        <a th:href="@{/user(size=${users.size}, page=${pageNumber} - 1)}" th:text="${pageNumber}"></a>
+    <div align="justify" class="center" th:if="${users.totalPages > 0}">
+        <a  th:each="pageNumber : ${pages}" th:href="@{/user(size=${users.size}, page=${pageNumber} - 1)}" th:text="${pageNumber}"></a>
     </div>
 </div>
 

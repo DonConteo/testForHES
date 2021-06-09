@@ -17,7 +17,7 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long> 
 
     @Modifying
     @Transactional
-    @Query(value = "update user_account set username = :username, password = :password, firstname = :firstname, lastname = :lastname where id = :id", nativeQuery = true)
+    @Query(value = "UPDATE user_account SET username = :username, password = :password, firstname = :firstname, lastname = :lastname WHERE id = :id", nativeQuery = true)
     void updateUserAccount(@Param("id") long id,
                     @Param("username") String username,
                     @Param("password") String password,
@@ -26,7 +26,7 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long> 
 
     @Modifying
     @Transactional
-    @Query(value = "update user_account set username = :username, firstname = :firstname, lastname = :lastname where id = :id", nativeQuery = true)
+    @Query(value = "UPDATE user_account SET username = :username, firstname = :firstname, lastname = :lastname WHERE id = :id", nativeQuery = true)
     void updateUserAccountWithoutPassword(@Param("id") long id,
                            @Param("username") String username,
                            @Param("firstname") String firstname,
@@ -34,7 +34,7 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long> 
 
     @Modifying
     @Transactional
-    @Query(value = "update user_account set status = :status where id = :id", nativeQuery = true)
+    @Query(value = "UPDATE user_account SET status = :status WHERE id = :id", nativeQuery = true)
     void changeUserActivity(@Param("id") long id, boolean status);
 
     @Transactional

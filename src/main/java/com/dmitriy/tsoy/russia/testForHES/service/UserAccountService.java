@@ -41,7 +41,7 @@ public class UserAccountService implements UserDetailsService {
     }
 
     public void updateUser(long id, String username, String password, String firstname, String lastname) {
-        userRepo.updateUserAccount(id, username, password, firstname, lastname);
+        userRepo.updateUserAccount(id, username, passwordEncoder.encode(password), firstname, lastname);
     }
 
     public void updateUser(long id, String username, String firstname, String lastname) {

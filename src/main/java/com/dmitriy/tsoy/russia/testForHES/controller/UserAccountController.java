@@ -239,7 +239,7 @@ public class UserAccountController {
             modelAndView.setViewName("edit");
             return modelAndView;
         }
-        if(!userForUpdate.getPassword().equals("")) {
+        if(!userDto.getPassword().equals("")) {
             userForUpdate.setPassword(userDto.getPassword());
         }
         userForUpdate.setFirstname(userDto.getFirstname());

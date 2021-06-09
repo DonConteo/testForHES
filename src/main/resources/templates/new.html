@@ -22,13 +22,13 @@
 <form action="new" th:object="${userdto}" method="post">
     <div class="center">
         <input name="username" type="text" placeholder="Username"/>
-        <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
+        <p style="color:red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
         <input name="password" type="password" placeholder="Password"/>
-        <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+        <p style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
         <input name="firstname" type="text" placeholder="First name"/>
-        <p th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}"></p>
+        <p style="color:red" th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}"></p>
         <input name="lastname" type="text" placeholder="Last name"/>
-        <p th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}"></p>
+        <p style="color:red" th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}"></p>
         <input type="submit" value="Save User"/>
     </div>
 </form>
